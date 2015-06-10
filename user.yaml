@@ -1,0 +1,197 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: User service
+  description: |
+    You can try all HTTP operations described in this Swagger spec.
+host: user.not-yet.com
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+
+  /me:
+    get:
+      description: The authenticated user
+      responses:
+        200:
+          description: Sends the current user
+          schema:
+            $ref: '#/definitions/User'
+  
+  /user:
+    post:
+      description: A new user
+      operationId: addUser
+      parameters:
+      - name: body
+        in: body
+        schema:
+          properties:
+            name:
+              type: string
+        description: Name of the user
+        required: true
+      responses:
+        201:
+          description: Created user's ID
+          schema:
+            type: string
+  
+  /user/{userId}:
+    get:
+      description: The user with ID
+      parameters:
+      - name: userId
+        in: path
+        type: string
+        description: ID of the user
+        required: true
+      responses:
+        200:
+          description: Sends a user
+          schema:
+            $ref: '#/definitions/User'
+  
+  /user/{userId}/userGroups:
+    get:
+      description: The user groups of the user ID
+      parameters:
+      - name: userId
+        in: path
+        type: string
+        description: ID of the user
+        required: true
+      - name: limit
+        in: query
+        description: number of user groups to return
+        type: integer
+        default: 10
+        minimum: 10
+        maximum: 1000
+      - name: offset
+        in: query
+        description: number of user groups to offset returned set by
+        type: integer
+        default: 0
+      responses:
+        200:
+          description: |
+            Sends user groups that the user is part of that the                           caller is able to see
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserGroup'
+              
+    post:
+      description: Add a user group that this user is the owner of
+      parameters:
+      - name: userId
+        in: path
+        type: string
+        description: ID of the user
+        required: true
+      - name: body
+        in: body
+        schema:
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+        description: The user group that was added
+        required: true
+      responses:
+        201:
+          description: |
+            The created user group's ID
+          schema:
+            type: string
+        
+  /user/{userId}/locationGroups:
+    get:
+      description: The location groups of the user ID
+      parameters:
+      - name: userId
+        in: path
+        type: string
+        description: ID of the user
+        required: true
+      - name: limit
+        in: query
+        description: number of location groups to return
+        type: integer
+        default: 10
+        maximum: 1000
+      - name: offset
+        in: query
+        description: number of location groups to offset returned set by
+        type: integer
+        default: 0
+      responses:
+        200:
+          description: |
+            Sends location groups that the user has that the caller is                    able to see
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LocationGroup'
+    
+    post:
+      description: Add a user-scoped location group
+      parameters:
+      - name: userId
+        in: path
+        type: string
+        description: ID of the user
+        required: true
+      - name: body
+        in: body
+        schema:
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+        description: The location group that was added
+        required: true
+      responses:
+        201:
+          description: |
+            The created location group's ID
+          schema:
+            type: string
+          
+definitions:
+  User:
+    description: |
+      A user's name and references to the groups they are part of.
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  UserGroup:
+    description: |
+      A collection of users that have visibility into 0 or more location            groups.
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+  LocationGroup:
+    description: |
+      A collection of Locations.
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
