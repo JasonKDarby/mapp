@@ -1,0 +1,65 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Location service
+  description: |
+    You can try all HTTP operations described in this Swagger spec.
+host: location.not-yet.com
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+
+  /location:
+    post:
+      description: Creates a new location
+      operationId: addLocation
+      parameters:
+      - name: body
+        in: body
+        schema:
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            latitude:
+              type: number
+            longitude:
+              type: number
+            locationGroupId:
+              type: string
+        description: Name of the user
+        required: true
+      responses:
+        202:
+          description: The request to create the location has been accepted
+          
+  /location/{locationId}:
+    get:
+      description: The location with ID
+      parameters:
+      - name: locationId
+        in: path
+        type: string
+        description: Sends the location with ID
+        required: true
+      responses:
+        200:
+          description: Sends the location with ID
+          
+    delete:
+      description: Delete the location with ID
+      parameters:
+      - name: locationId
+        in: path
+        type: string
+        description: ID of the location to delete
+        required: true
+      responses:
+        202:
+          description: The location deletion request has been accepted
